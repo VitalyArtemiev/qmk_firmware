@@ -60,6 +60,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         uint8_t layer = get_highest_layer(layer_state);
 
         HSV hsv = rgb_matrix_get_hsv();
+        hsv.h += 128;
         RGB rgb = hsv_to_rgb(hsv);
 
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
@@ -71,6 +72,21 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                     rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
                 }
             }
+        }
+
+        uint8_t layer_indicator_index;
+
+        switch(layer) {
+            case 1: layer_indicator_index = LAYER_LED_INDEX_1; break;
+            case 2: layer_indicator_index = LAYER_LED_INDEX_2; break;
+            case 3: layer_indicator_index = LAYER_LED_INDEX_3; break;
+            case 4: layer_indicator_index = LAYER_LED_INDEX_4; break;
+            case 5: layer_indicator_index = LAYER_LED_INDEX_5; break;
+            default: return true; break;
+        }
+
+        if (layer_indicator_index >= led_min && layer_indicator_index < led_max && layer_indicator_index != NO_LED) {
+            rgb_matrix_set_color(layer_indicator_index, RGB_WHITE);
         }
     }
     return true;
@@ -98,7 +114,7 @@ bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
             RGB_MATRIX_INDICATOR_SET_COLOR(NUM_LOCK_LED_INDEX, 0, 0, 0);
         }
     }
-#    endif // SCROLL_LOCK_LED_INDEX
+#    endif // NUM_LOCK_LED_INDEX
 #    if defined(SCROLL_LOCK_LED_INDEX)
     if (host_keyboard_led_state().scroll_lock) {
         RGB_MATRIX_INDICATOR_SET_COLOR(SCROLL_LOCK_LED_INDEX, 255, 4, 4);

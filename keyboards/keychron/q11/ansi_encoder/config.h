@@ -21,3 +21,10 @@
 
 /* Enable scroll-lock LED */
 #define SCROLL_LOCK_LED_INDEX 16
+
+#define LAYER_LED_INDEX_1 7
+#define LAYER_LED_INDEX_2 15
+#define LAYER_LED_INDEX_3 22
+#define LAYER_LED_INDEX_4 29
+#define LAYER_LED_INDEX_5 36
+
