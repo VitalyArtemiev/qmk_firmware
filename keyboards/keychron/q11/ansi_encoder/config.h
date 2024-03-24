@@ -18,3 +18,6 @@
 
 /* Enable caps-lock LED */
 #define CAPS_LOCK_LED_INDEX 23
+
+/* Enable scroll-lock LED */
+#define SCROLL_LOCK_LED_INDEX 16

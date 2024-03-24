@@ -35,6 +35,15 @@
 /* Encoder Configuration */
 #define ENCODER_DEFAULT_POS 0x3
 
+// REACTIVE_MULTINEXUS
+#define RGBLIGHT_DEFAULT_MODE 20
+
 // Needed as the master side could enter slave state during poweron
 // of host, due to missing VUSB detection.
 #define SPLIT_WATCHDOG_ENABLE
+
+// Sync state
+#define SPLIT_LAYER_STATE_ENABLE
+
+// Add layers
+#define DYNAMIC_KEYMAP_LAYER_COUNT 6
