@@ -17,12 +17,16 @@
 #include "quantum.h"
 
 #ifdef DIP_SWITCH_ENABLE
+bool dip_active = true;
+
 bool dip_switch_update_kb(uint8_t index, bool active) {
     if (!dip_switch_update_user(index, active)) {
         return false;
     }
     if (index == 0) {
-        default_layer_set(1UL << (active ? 0 : 3));
+        // Switch between COLEMAK-DH (0) and QWERTY (1)
+        default_layer_set(1UL << (active ? 0 : 1));
+        dip_active = active;
     }
     return true;
 }
@@ -60,7 +64,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         uint8_t layer = get_highest_layer(layer_state);
 
         HSV hsv = rgb_matrix_get_hsv();
-        hsv.h += 128;
+        hsv.h += 75;
         RGB rgb = hsv_to_rgb(hsv);
 
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
@@ -95,6 +99,14 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
     if (!rgb_matrix_indicators_advanced_user(led_min, led_max)) {
         return false;
+    }
+    // QWERTY (Layer 1) indicator (dip swicth in right position)
+    if (!dip_active) {
+        RGB_MATRIX_INDICATOR_SET_COLOR(LAYER_LED_INDEX_1, 255, 255, 255);
+    } else {
+        if (!rgb_matrix_get_flags()) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(LAYER_LED_INDEX_1, 0, 0, 0);
+        }
     }
     // RGB_MATRIX_INDICATOR_SET_COLOR(index, red, green, blue);
 #    if defined(CAPS_LOCK_LED_INDEX)
