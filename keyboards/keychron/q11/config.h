@@ -36,7 +36,10 @@
 #define ENCODER_DEFAULT_POS 0x3
 
 // REACTIVE_MULTINEXUS
-#define RGBLIGHT_DEFAULT_MODE 20
+#define RGB_MATRIX_DEFAULT_MODE 20
+
+// More granular RGB control
+#define RGB_MATRIX_HUE_STEP 1
 
 // Needed as the master side could enter slave state during poweron
 // of host, due to missing VUSB detection.
