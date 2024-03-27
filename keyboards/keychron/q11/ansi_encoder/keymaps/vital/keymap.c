@@ -18,9 +18,9 @@
 #include "keychron_common.h"
 
 enum layers{
-    // COLEMAK-DH
+    // COLEMAK-DH with mode-tap
     CMK_BASE,
-    // QWERTY
+    // QWERTY with mod-tap
     QWR_BASE,
     // No mod-tap
     GAME_BASE,
@@ -55,9 +55,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MC_5,   KC_LCTL,KC_LWIN,     KC_LALT,     MO(FN1),                  KC_SPC,                    LT(FN1,KC_SPC),           KC_RALT,        MO(FN2), KC_RCTL, KC_LEFT, KC_DOWN,KC_RGHT),
 
     [FN1] = LAYOUT_91_ansi(
-        RGB_TOG,  _______,  KC_BRID,  KC_BRIU,  KC_TASK,  KC_FLXP,  RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  RGB_RMOD, RGB_MOD,  NK_TOGG,
-        TG(1),    _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
-        TG(2),    KC_SCRL,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  KC_UP,    _______,  _______,  _______,    _______,  _______,            _______,
+        RGB_TOG,  DF(0),  KC_BRID,  KC_BRIU,  KC_TASK,  KC_FLXP,  RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  RGB_RMOD, RGB_MOD,  NK_TOGG,
+        DF(1),    _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        DF(2),    KC_SCRL,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  KC_UP,    _______,  _______,  _______,    _______,  _______,            _______,
         TG(3),    _______,  KC_ESCAPE,_______,  _______,  _______,  _______,   _______,  KC_LEFT,  KC_DOWN,  KC_RIGHT, KC_ENTER, _______,              _______,            _______,
         TG(4),    _______,            _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,              _______,  _______,
         TG(5),    _______,  _______,  _______,  _______,            _______,                       KC_BSPC,            KC_DEL,   _______,    _______,  _______,  _______,  _______),
@@ -84,10 +84,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [CMK_BASE] = { ENCODER_CCW_CW(KC_MS_WH_DOWN, KC_MS_WH_UP), ENCODER_CCW_CW(KC_VOLU, KC_VOLD) },
     [QWR_BASE] = { ENCODER_CCW_CW(KC_MS_WH_DOWN, KC_MS_WH_UP), ENCODER_CCW_CW(KC_VOLU, KC_VOLD) },
+    [GAME_BASE]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
     [FN1]   = { ENCODER_CCW_CW(RGB_HUD, RGB_HUI), ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
     [FN2]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
     [FN3]   = { ENCODER_CCW_CW(RGB_HUD, RGB_HUI), ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [GAME_BASE]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
 };
 #endif // ENCODER_MAP_ENABLE
 

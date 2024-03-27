@@ -17,7 +17,6 @@
 #include "quantum.h"
 
 #ifdef DIP_SWITCH_ENABLE
-bool dip_active = true;
 
 bool dip_switch_update_kb(uint8_t index, bool active) {
     if (!dip_switch_update_user(index, active)) {
@@ -26,7 +25,6 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
     if (index == 0) {
         // Switch between COLEMAK-DH (0) and QWERTY (1)
         default_layer_set(1UL << (active ? 0 : 1));
-        dip_active = active;
     }
     return true;
 }
@@ -59,14 +57,31 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (get_highest_layer(layer_state) > 0) {
-        uint8_t layer = get_highest_layer(layer_state);
+const int layer_leds[6] = {
+    LAYER_LED_INDEX_0,
+    LAYER_LED_INDEX_1, 
+    LAYER_LED_INDEX_2,
+    LAYER_LED_INDEX_3,
+    LAYER_LED_INDEX_4,
+    LAYER_LED_INDEX_5, 
+}; 
 
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    void checked_set_color(int index, uint8_t red, uint8_t green, uint8_t blue) {
+        if (index >= led_min && index < led_max && index != NO_LED) {
+            rgb_matrix_set_color(index, red, green, blue);
+        }
+    }
+
+    uint8_t layer = get_highest_layer(layer_state);
+
+    if (layer > 0) {
         HSV hsv = rgb_matrix_get_hsv();
+        // Rotate hue wheel
         hsv.h += 75;
         RGB rgb = hsv_to_rgb(hsv);
 
+        // Highlight active keys on layer
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
@@ -78,35 +93,24 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             }
         }
 
-        uint8_t layer_indicator_index;
-
-        switch(layer) {
-            case 1: layer_indicator_index = LAYER_LED_INDEX_1; break;
-            case 2: layer_indicator_index = LAYER_LED_INDEX_2; break;
-            case 3: layer_indicator_index = LAYER_LED_INDEX_3; break;
-            case 4: layer_indicator_index = LAYER_LED_INDEX_4; break;
-            case 5: layer_indicator_index = LAYER_LED_INDEX_5; break;
-            default: return true; break;
-        }
-
-        if (layer_indicator_index >= led_min && layer_indicator_index < led_max && layer_indicator_index != NO_LED) {
-            rgb_matrix_set_color(layer_indicator_index, RGB_WHITE);
+        // Display active layers
+        for (int i = 1; i<sizeof(layer_leds); i+=1) {
+            if (layer_state & 1UL << i)
+                checked_set_color(layer_leds[i], RGB_WHITE);
         }
     }
+
+    // Display default layers
+    uint8_t default_layer = get_highest_layer(default_layer_state);
+    if (default_layer < sizeof(layer_leds))
+        checked_set_color(layer_leds[default_layer], RGB_RED);
+    
     return true;
 }
 
 bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
     if (!rgb_matrix_indicators_advanced_user(led_min, led_max)) {
         return false;
-    }
-    // QWERTY (Layer 1) indicator (dip swicth in right position)
-    if (!dip_active) {
-        RGB_MATRIX_INDICATOR_SET_COLOR(LAYER_LED_INDEX_1, 255, 255, 255);
-    } else {
-        if (!rgb_matrix_get_flags()) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(LAYER_LED_INDEX_1, 0, 0, 0);
-        }
     }
     // RGB_MATRIX_INDICATOR_SET_COLOR(index, red, green, blue);
 #    if defined(CAPS_LOCK_LED_INDEX)
