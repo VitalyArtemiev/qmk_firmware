@@ -22,19 +22,21 @@ enum layers{
     CMK_BASE,
     // QWERTY
     QWR_BASE,
-    // No mod-tap
-    GAME_BASE,
+    // Mod-tap toggle
+    MOD_TAP,
     FN1,
     FN2,
     FN3,
 };
+
+#define _ KC_TRANSPARENT
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [CMK_BASE] = LAYOUT_91_ansi(
         KC_SLEP,KC_ESC, KC_F1,       KC_F2,       KC_F3,       KC_F4,       KC_F5, KC_F6, KC_F7,       KC_F8,       KC_F9,       KC_F10,        KC_F11,  KC_F12,   KC_INS,  KC_DEL, KC_MUTE,
         MC_1,   KC_GRV, KC_1,        KC_2,        KC_3,        KC_4,        KC_5,  KC_6,  KC_7,        KC_8,        KC_9,        KC_0,          KC_MINS, KC_EQL,   KC_BSPC,         KC_PGUP,
         MC_2,   KC_TAB, KC_Q,        KC_W,        KC_F,        KC_P,        KC_B,  KC_J,  KC_L,        KC_U,        KC_Y,        KC_SCLN,       KC_LBRC, KC_RBRC,  KC_BSLS,         KC_PGDN,
-        MC_3,   KC_CAPS,LCTL_T(KC_A),LSFT_T(KC_R),LALT_T(KC_S),LGUI_T(KC_T),KC_G,  KC_M,  RGUI_T(KC_N),RALT_T(KC_E),RSFT_T(KC_I),RCTL_T(KC_O),  KC_QUOT,           KC_ENT,          KC_HOME,
+        MC_3,   KC_CAPS,KC_A,        KC_R,        KC_S,        KC_T,        KC_G,  KC_M,  KC_N,        KC_E,        KC_I,        KC_O,          KC_QUOT,           KC_ENT,          KC_HOME,
         MC_4,   KC_LSFT,             KC_X,        KC_C,        KC_D,        KC_V,  KC_Z,  KC_K,        KC_H,        KC_COMM,     KC_DOT,        KC_SLSH,           KC_RSFT, KC_UP,
         MC_5,   KC_LCTL,KC_LWIN,     KC_LALT,     MO(FN1),                  KC_SPC,                    LT(FN1,KC_SPC),           KC_RALT,       MO(FN2), KC_RCTL,  KC_LEFT, KC_DOWN,KC_RGHT),
 
@@ -42,17 +44,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_SLEP,KC_ESC, KC_F1,       KC_F2,       KC_F3,       KC_F4,       KC_F5, KC_F6, KC_F7,       KC_F8,       KC_F9,       KC_F10,         KC_F11,  KC_F12,  KC_INS,  KC_DEL, KC_MUTE,
         MC_1,   KC_GRV, KC_1,        KC_2,        KC_3,        KC_4,        KC_5,  KC_6,  KC_7,        KC_8,        KC_9,        KC_0,           KC_MINS, KC_EQL,  KC_BSPC,         KC_PGUP,
         MC_2,   KC_TAB, KC_Q,        KC_W,        KC_E,        KC_R,        KC_T,  KC_Y,  KC_U,        KC_I,        KC_O,        KC_P,           KC_LBRC, KC_RBRC, KC_BSLS,         KC_PGDN,
-        MC_3,   KC_CAPS,LCTL_T(KC_A),LSFT_T(KC_S),LALT_T(KC_D),LGUI_T(KC_F),KC_G,  KC_H,  RGUI_T(KC_J),RALT_T(KC_K),RSFT_T(KC_L),RCTL_T(KC_SCLN),KC_QUOT,          KC_ENT,          KC_HOME,
-        MC_4,   KC_LSFT,             KC_Z,        KC_X,        KC_C,        KC_V,  KC_B,  KC_N,        KC_M,        KC_COMM,     KC_DOT,         KC_SLSH,          KC_RSFT, KC_UP,
-        MC_5,   KC_LCTL,KC_LWIN,     KC_LALT,     MO(FN1),                  KC_SPC,                    LT(FN1,KC_SPC),           KC_RALT,        MO(FN2), KC_RCTL, KC_LEFT, KC_DOWN,KC_RGHT),
-
-    [GAME_BASE] = LAYOUT_91_ansi(
-        KC_SLEP,KC_ESC, KC_F1,       KC_F2,       KC_F3,       KC_F4,       KC_F5, KC_F6, KC_F7,       KC_F8,       KC_F9,       KC_F10,         KC_F11,  KC_F12,  KC_INS,  KC_DEL, KC_MUTE,
-        MC_1,   KC_GRV, KC_1,        KC_2,        KC_3,        KC_4,        KC_5,  KC_6,  KC_7,        KC_8,        KC_9,        KC_0,           KC_MINS, KC_EQL,  KC_BSPC,         KC_PGUP,
-        MC_2,   KC_TAB, KC_Q,        KC_W,        KC_E,        KC_R,        KC_T,  KC_Y,  KC_U,        KC_I,        KC_O,        KC_P,           KC_LBRC, KC_RBRC, KC_BSLS,         KC_PGDN,
         MC_3,   KC_CAPS,KC_A,        KC_S,        KC_D,        KC_F,        KC_G,  KC_H,  KC_J,        KC_K,        KC_L,        KC_SCLN,        KC_QUOT,          KC_ENT,          KC_HOME,
         MC_4,   KC_LSFT,             KC_Z,        KC_X,        KC_C,        KC_V,  KC_B,  KC_N,        KC_M,        KC_COMM,     KC_DOT,         KC_SLSH,          KC_RSFT, KC_UP,
         MC_5,   KC_LCTL,KC_LWIN,     KC_LALT,     MO(FN1),                  KC_SPC,                    LT(FN1,KC_SPC),           KC_RALT,        MO(FN2), KC_RCTL, KC_LEFT, KC_DOWN,KC_RGHT),
+
+    [MOD_TAP] = LAYOUT_91_ansi(
+        _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,  _______,  _______,
+        _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______, LCTL_T(_),LSFT_T(_), LALT_T(_), LGUI_T(_),_______,  _______,RGUI_T(_),  RALT_T(_),RSFT_T(_),RCTL_T(_),_______,    _______,  _______,
+        _______,  _______,            _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______,  _______,
+        _______,  _______,  _______,  _______,  _______,             _______,                      _______,            _______,  _______,    _______,  _______,  _______,  _______),
 
     [FN1] = LAYOUT_91_ansi(
         RGB_TOG,  _______,  KC_BRID,  KC_BRIU,  KC_TASK,  KC_FLXP,  RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  RGB_RMOD, RGB_MOD,  NK_TOGG,
@@ -84,12 +86,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [CMK_BASE] = { ENCODER_CCW_CW(KC_MS_WH_DOWN, KC_MS_WH_UP), ENCODER_CCW_CW(KC_VOLU, KC_VOLD) },
     [QWR_BASE] = { ENCODER_CCW_CW(KC_MS_WH_DOWN, KC_MS_WH_UP), ENCODER_CCW_CW(KC_VOLU, KC_VOLD) },
+    [MOD_TAP]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
     [FN1]   = { ENCODER_CCW_CW(RGB_HUD, RGB_HUI), ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
     [FN2]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
     [FN3]   = { ENCODER_CCW_CW(RGB_HUD, RGB_HUI), ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [GAME_BASE]   = { ENCODER_CCW_CW(RGB_SAD, RGB_SAI), ENCODER_CCW_CW(RGB_SPD, RGB_SPI)},
 };
-#endif // ENCODER_MAP_ENABLE
+#endif // ENCODER_MAP_ENABLEппп
 
 // clang-format on
 
