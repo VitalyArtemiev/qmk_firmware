@@ -17,6 +17,15 @@
 #include "quantum.h"
 #include "transactions.h"
 
+typedef union {
+  uint32_t raw;
+  struct {
+    HSV secondary_color;
+  };
+} user_config_t;
+
+user_config_t user_config = {.secondary_color = {23, 80, 80}};
+
 #ifdef DIP_SWITCH_ENABLE
 
 bool dip_switch_update_kb(uint8_t index, bool active) {
@@ -30,8 +39,6 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
     return true;
 }
 #endif
-
-HSV secondary_color = {15, 50, 50};
 
 typedef struct _master_to_slave_t {
     HSV secondary_color;
@@ -61,9 +68,10 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
         case KC_OPER:
-            secondary_color = rgb_matrix_get_hsv();
+            user_config.secondary_color = rgb_matrix_get_hsv();
 
-            master_to_slave_t payload = { secondary_color };
+            master_to_slave_t payload = { user_config.secondary_color };
+            eeconfig_update_user(user_config.raw);
             transaction_rpc_send(SYNC_SECONDARY_COLOR, sizeof(master_to_slave_t), &payload);
             break;
     }
@@ -92,7 +100,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         // HSV hsv = rgb_matrix_get_hsv();
         // Rotate hue wheel
         // hsv.h += 75;
-        RGB rgb = hsv_to_rgb(secondary_color);
+        RGB rgb = hsv_to_rgb(user_config.secondary_color);
 
         // Highlight active keys on layer
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
@@ -219,9 +227,10 @@ void keyboard_post_init_kb(void) {
 
 void user_sync_a_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
     const master_to_slave_t *m2s = (const master_to_slave_t*)in_data;
-    secondary_color = m2s->secondary_color;
+    user_config.secondary_color = m2s->secondary_color;
 }
 
 void keyboard_post_init_user(void) {
+    user_config.raw = eeconfig_read_user();
     transaction_register_rpc(SYNC_SECONDARY_COLOR, user_sync_a_slave_handler);
 }
