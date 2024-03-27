@@ -48,5 +48,8 @@
 // Sync state
 #define SPLIT_LAYER_STATE_ENABLE
 
+// Data sync transaction ID
+#define SPLIT_TRANSACTION_IDS_USER SYNC_SECONDARY_COLOR
+
 // Add layers
 #define DYNAMIC_KEYMAP_LAYER_COUNT 6

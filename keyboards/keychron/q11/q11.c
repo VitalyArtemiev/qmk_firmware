@@ -15,6 +15,7 @@
  */
 
 #include "quantum.h"
+#include "transactions.h"
 
 #ifdef DIP_SWITCH_ENABLE
 
@@ -29,6 +30,12 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
     return true;
 }
 #endif
+
+HSV secondary_color = {15, 50, 50};
+
+typedef struct _master_to_slave_t {
+    HSV secondary_color;
+} master_to_slave_t;
 
 #if defined(RGB_MATRIX_ENABLE) && defined(CAPS_LOCK_LED_INDEX)
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
@@ -53,6 +60,12 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 rgb_matrix_enable();
             }
             return false;
+        case KC_OPER:
+            secondary_color = rgb_matrix_get_hsv();
+
+            master_to_slave_t payload = { secondary_color };
+            transaction_rpc_send(SYNC_SECONDARY_COLOR, sizeof(master_to_slave_t), &payload);
+            break;
     }
     return true;
 }
@@ -76,10 +89,10 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
 
     if (layer > 0) {
-        HSV hsv = rgb_matrix_get_hsv();
+        // HSV hsv = rgb_matrix_get_hsv();
         // Rotate hue wheel
-        hsv.h += 75;
-        RGB rgb = hsv_to_rgb(hsv);
+        // hsv.h += 75;
+        RGB rgb = hsv_to_rgb(secondary_color);
 
         // Highlight active keys on layer
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
@@ -202,4 +215,13 @@ void keyboard_post_init_kb(void) {
     }
 
     keyboard_post_init_user();
+}
+
+void user_sync_a_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const master_to_slave_t *m2s = (const master_to_slave_t*)in_data;
+    secondary_color = m2s->secondary_color;
+}
+
+void keyboard_post_init_user(void) {
+    transaction_register_rpc(SYNC_SECONDARY_COLOR, user_sync_a_slave_handler);
 }
