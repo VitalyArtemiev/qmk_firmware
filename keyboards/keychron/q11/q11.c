@@ -24,7 +24,7 @@ typedef union {
   };
 } user_config_t;
 
-user_config_t user_config = {.secondary_color = {23, 80, 80}};
+user_config_t user_config = {.secondary_color = { .h = 7, .s = 255, .v = 255}};
 
 #ifdef DIP_SWITCH_ENABLE
 
@@ -116,15 +116,17 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
         // Display active layers
         for (int i = 1; i<sizeof(layer_leds); i+=1) {
-            if (layer_state & 1UL << i)
+            if (layer_state & 1UL << i) {
                 checked_set_color(layer_leds[i], RGB_WHITE);
+            }
         }
     }
 
     // Display default layers
     uint8_t default_layer = get_highest_layer(default_layer_state);
-    if (default_layer < sizeof(layer_leds))
+    if (default_layer < sizeof(layer_leds)) {
         checked_set_color(layer_leds[default_layer], RGB_RED);
+    }
     
     return true;
 }
@@ -232,5 +234,11 @@ void user_sync_a_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t o
 
 void keyboard_post_init_user(void) {
     user_config.raw = eeconfig_read_user();
+    if ((user_config.secondary_color.h == 0) && (user_config.secondary_color.s == 0) && (user_config.secondary_color.v == 0)) {
+        user_config.secondary_color.h = 7;
+        user_config.secondary_color.s = 255;
+        user_config.secondary_color.v = 255;
+    }
+
     transaction_register_rpc(SYNC_SECONDARY_COLOR, user_sync_a_slave_handler);
 }
